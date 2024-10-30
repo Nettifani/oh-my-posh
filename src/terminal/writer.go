@@ -604,10 +604,11 @@ func asAnsiColors(background, foreground color.Ansi) (color.Ansi, color.Ansi) {
 	background = background.Resolve(CurrentColors, ParentColors)
 	foreground = foreground.Resolve(CurrentColors, ParentColors)
 
-	inverted := foreground == color.Transparent && len(background) != 0
-
-	backgroundAnsi := getAnsiFromColorString(background, !inverted)
 	foregroundAnsi := getAnsiFromColorString(foreground, false)
+
+	// HACK: This workarounds a weird color issue when the foreground color taken from the palette turns out to be `transparent`.
+	inverted := foregroundAnsi == color.Transparent && len(background) != 0
+	backgroundAnsi := getAnsiFromColorString(background, !inverted)
 
 	return backgroundAnsi, foregroundAnsi
 }
